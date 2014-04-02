@@ -446,8 +446,8 @@ void DeviceBitTcpClient::getResponse()
 	}
 	else if(_clientStr.length()>0)
 	{
-		Serial.print("FrmSrv:");
-		Serial.println(_clientStr);
+		//Serial.print("FrmSrv:");
+		//Serial.println(_clientStr);
 		//if(_clientStr.indexOf("&^!")<0)
 		//{
 			//Serial.println("no end!");
@@ -480,7 +480,7 @@ void DeviceBitTcpClient::getResponse()
 			}
 			else if(functionName.equals("updateSensor"))
 			{
-				Serial.println("updateSensor.....");
+				Serial.println("updateSensor.");
 				
 				UserSwitchNode *currentSwitch = switchHead;  
 				while(currentSwitch != NULL)
