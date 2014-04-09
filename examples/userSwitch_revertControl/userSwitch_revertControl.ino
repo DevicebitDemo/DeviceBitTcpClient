@@ -39,7 +39,7 @@ void setup()
   //we test transfer 1 para from website(you defined on it) to your arduino
   //enjoy it
   
-  UserSwitch us1 (switchTest,"relay",1);
+  UserSwitch us1 (switchTest,"relay",0);
   client->addUserSwitch(us1);
 //  client->easySetupMode(true);
   client->checkFreeMem();
