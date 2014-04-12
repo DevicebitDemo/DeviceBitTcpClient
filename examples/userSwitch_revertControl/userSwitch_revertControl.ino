@@ -30,7 +30,7 @@ void setup()
   //1.simplest
   client = new DeviceBitTcpClient(DB_USERKEY, DB_GATEWAY);
   //2.full setting for your network
-  //client = new DeviceBitTcpClient(LW_USERKEY, LW_GATEWAY,mac,ip,mydns,gw,subnet);
+  //client = new DeviceBitTcpClient(DB_USERKEY, DB_GATEWAY,mac,ip,mydns,gw,subnet);
   
   
   //switchTest is the function you write below to handle your program
@@ -39,7 +39,7 @@ void setup()
   //we test transfer 1 para from website(you defined on it) to your arduino
   //enjoy it
   
-  UserSwitch us1 (switchTest,"relay",1);
+  UserSwitch us1 (switchTest,"relay",0);
   client->addUserSwitch(us1);
 //  client->easySetupMode(true);
   client->checkFreeMem();
