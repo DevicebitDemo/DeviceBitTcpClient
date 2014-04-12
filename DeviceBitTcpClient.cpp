@@ -96,7 +96,14 @@ DeviceBitTcpClient::DeviceBitTcpClient(const char *userKey,const char *gatewayNo
 	
 	setupDefaultValue();
 	
-	Ethernet.begin(_mac);
+	//Ethernet.begin(_mac);
+	byte _mac[] = {0x74, 0x69, 0x69, 0x2D, 0x30, 0x31};
+	if (Ethernet.begin(_mac) == 0) {
+    Serial.println("fail");
+    // no point in carrying on, so do nothing forevermore:
+    for (;;)
+      ;
+  }
 	Serial.println(Ethernet.localIP());
 	//Ethernet.begin(mac, ip);
 	delay(1000);
@@ -158,7 +165,8 @@ void DeviceBitTcpClient::setupDefaultValue()
 
 	setRevCtrlData("");
 	_bEasyMode = false;
-	
+	startCommPost = 75;
+	currentPos = 0;
 
 }
 
@@ -229,7 +237,7 @@ void DeviceBitTcpClient::readRom()
 	    	char * tmpc = strToChar(tmp);
 	    	_gatewayNo = tmpc;
 	    }
-    	tmp = NULL;
+    	tmp = "";
     }
   }
 }
@@ -274,7 +282,7 @@ void DeviceBitTcpClient::listenServer()
             Serial.println(userInfoStr);
           }
           //Serial.println(clientStr);
-          clientStr = NULL;
+          clientStr = "";
           //checkFreeMem();
         } 
         else if (c != '\r') {
@@ -368,7 +376,7 @@ void DeviceBitTcpClient::sendUserSwitchState()
 		//msg = NULL;
 	}
 	stateStr = "";
-	stateStr = NULL;
+	//stateStr = NULL;
 	if(strlen(_revCtrlData)>0)
 	{
 		int len=strlen(_revCtrlResult)+strlen(_revCtrlMsg)+strlen(_revCtrlData)+71;
@@ -382,7 +390,7 @@ void DeviceBitTcpClient::sendUserSwitchState()
 		_revCtrlData = NULL;
 		setRevCtrlMsg("true","ok");
 		setRevCtrlData("");
-		_clientStr = NULL;
+		_clientStr = "";
 	}
 }
 
@@ -433,7 +441,7 @@ void DeviceBitTcpClient::updateUserSwitchState(char* switchId,char* switchStat)
 		
 		setRevCtrlMsg("true","ok");
 		setRevCtrlData("");
-		_clientStr = NULL;
+		_clientStr = "";
 	}
 }
 
@@ -441,11 +449,17 @@ void DeviceBitTcpClient::getResponse()
 {
 	if (_clientRevCtrl.available())
 	{
+		currentPos ++;
 		char c = _clientRevCtrl.read();
-		_clientStr += c;
+		if(currentPos >startCommPost)
+		{
+			//Serial.print(c);checkFreeMem();
+			_clientStr += c;
+		}
 	}
 	else if(_clientStr.length()>0)
 	{
+		currentPos = 0;
 		//Serial.print("FrmSrv:");
 		//Serial.println(_clientStr);
 		//if(_clientStr.indexOf("&^!")<0)
@@ -453,7 +467,7 @@ void DeviceBitTcpClient::getResponse()
 			//Serial.println("no end!");
 			//return;
 		//}
-		//checkFreeMem();
+		checkFreeMem();
 		
 		String functionName = getParaValueStr(_clientStr,"f");
 			char* p1 = getParaValue(_clientStr,"p1");
@@ -461,7 +475,7 @@ void DeviceBitTcpClient::getResponse()
 			//char* p3 = getParaValue(_clientStr,"p3");
 			//char* p4 = getParaValue(_clientStr,"p4");
 			//char* p5 = getParaValue(_clientStr,"p5");
-			_clientStr = NULL;
+			_clientStr = "";
 			
 		if(!functionName.equals(""))//here comes user defined command
 		{
@@ -480,7 +494,7 @@ void DeviceBitTcpClient::getResponse()
 			}
 			else if(functionName.equals("updateSensor"))
 			{
-				Serial.println("updateSensor.");
+				Serial.println("ud");
 				
 				UserSwitchNode *currentSwitch = switchHead;  
 				while(currentSwitch != NULL)
@@ -561,7 +575,7 @@ void DeviceBitTcpClient::getResponse()
 			free(p1);free(p2);
 			p1=p2=NULL;
 
-			functionName = NULL;
+			functionName = "";
 			if(strlen(_revCtrlData)>0)
 			{
 				int len=strlen(_revCtrlResult)+strlen(_revCtrlMsg)+strlen(_revCtrlData)+71;
@@ -581,7 +595,7 @@ void DeviceBitTcpClient::getResponse()
 			commandString = NULL;
 		setRevCtrlMsg("false","NotBind");
 		setRevCtrlData("");
-		_clientStr = NULL;
+		_clientStr = "";
 		
 	}
 }
@@ -602,7 +616,7 @@ char* DeviceBitTcpClient::getParaValue(String &orig,String paraName)
 String DeviceBitTcpClient::getParaValueStr(String &orig,String paraName)
 {
 		int functionNameStartPos = orig.indexOf("\""+paraName+"\":\"");
-		if(functionNameStartPos<0)return NULL;
+		if(functionNameStartPos<0)return "";
 		int functionNameEndPos = orig.indexOf("\"",functionNameStartPos+4+paraName.length());
 		String functionName = orig.substring(functionNameStartPos+4+paraName.length(),functionNameEndPos);
 		
@@ -710,7 +724,7 @@ void DeviceBitTcpClient::sendSensorValue(String sensorName,String sensorValue)
 		{
 			Serial.println("malloc:F");
 		}
-		connStr = NULL;
+		connStr = "";
 		_sensorValueStr = "";
 		
 		//checkFreeMem();
@@ -719,7 +733,8 @@ void DeviceBitTcpClient::sendSensorValue(String sensorName,String sensorValue)
 	else 
 	{
 		// if you didn't get a connection to the server:
-		Serial.println("SendFail");
+		Serial.print("Sd");
+		Serial.println("Fail");
 	}
 	
 	

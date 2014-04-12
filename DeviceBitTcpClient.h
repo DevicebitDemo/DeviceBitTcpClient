@@ -150,8 +150,10 @@ class DeviceBitTcpClient
 		void readRom();
 		void listenServer();
 		void softwareReset();
-
+		
 		EthernetServer server;
+		int startCommPost;
+		int currentPos;
 };
 
 #endif
