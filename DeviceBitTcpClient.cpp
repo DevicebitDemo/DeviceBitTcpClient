@@ -467,7 +467,7 @@ void DeviceBitTcpClient::getResponse()
 			//Serial.println("no end!");
 			//return;
 		//}
-		checkFreeMem();
+		//checkFreeMem();
 		
 		String functionName = getParaValueStr(_clientStr,"f");
 			char* p1 = getParaValue(_clientStr,"p1");
@@ -494,7 +494,7 @@ void DeviceBitTcpClient::getResponse()
 			}
 			else if(functionName.equals("updateSensor"))
 			{
-				Serial.println("ud");
+				//Serial.println("updateSensor");
 				
 				UserSwitchNode *currentSwitch = switchHead;  
 				while(currentSwitch != NULL)
@@ -515,6 +515,7 @@ void DeviceBitTcpClient::getResponse()
 						
 						execute(currentSwitch->userSwitchFunctionAddr,p2);
 						updateUserSwitchState(p1,p2);
+						//return;
 					}
 					currentSwitch = currentSwitch->next;
 				}
@@ -733,7 +734,7 @@ void DeviceBitTcpClient::sendSensorValue(String sensorName,String sensorValue)
 	else 
 	{
 		// if you didn't get a connection to the server:
-		Serial.print("Sd");
+		Serial.print("Send");
 		Serial.println("Fail");
 	}
 	
