@@ -42,7 +42,7 @@ void setup()
   UserSwitch us1 (switchTest,"relay",0);
   client->addUserSwitch(us1);
 //  client->easySetupMode(true);
-  client->checkFreeMem();
+
 }
 
 void loop()
@@ -57,12 +57,12 @@ void switchTest(char* p1)
   if(String(p1).equals("0"))
 	{
 		digitalWrite(relayPin,LOW);
-		Serial.println("on");
+		Serial.println("off");
 	}
 	else if(String(p1).equals("1"))
 	{
 		digitalWrite(relayPin,HIGH);
-		Serial.println("off");
+		Serial.println("on");
 	}
-  client->checkFreeMem();
+//  client->checkFreeMem();
 }
